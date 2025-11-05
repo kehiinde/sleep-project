@@ -1,0 +1,82 @@
+---
+title: "Exploring the Relationship Between Stress, Physical Activity, Gender, and Sleep Duration"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
+
+**Motivation**
+This project aims to highlight why sleep is important, and why predicting sleep duration from lifestyle factors matters.
+
+**Main Questions**
+Can we predict sleep duration from stress, physical activity, and gender?
+
+**Supporting Questions**
+- How does average sleep duration vary across gender
+- Is there a correlation between physical activity and stress level?
+
+**Notebook Goal**
+This notebook focuses on data cleaning and exploratory analysis using R to prepare a dataset for resgression modeling in Python.
+
+
+## Load Data
+```{r}
+library(tidyverse)
+dataset = read.csv("sleep_data.csv")
+str(dataset)
+is.na(dataset$Sleep.Duration)
+
+```
+
+## Exploratory Data Analysis
+Target Variable: Sleep Duration
+Predictors: Stress Level, Physical Activity, Gender
+```{r}
+avg_sleep_duration = mean(dataset$Sleep.Duration)
+
+avg_quality_sleep = mean(dataset$Quality.of.Sleep)
+
+avg_physical_activity = mean(dataset$Physical.Activity.Level)
+
+averages = data.frame(
+  Metrics = c("Avg. Sleep Duration (Hours)",
+"Avg. Sleep Quality (0-10)", 
+ "Avg. Physical Activity (0-100)"
+),
+Values = c(avg_sleep_duration, avg_quality_sleep, avg_physical_activity)
+)
+averages
+
+#Plots 
+hist(dataset$Sleep.Duration,
+     main = "Sleep Duration",
+     xlab = "Sleep in hours" )
+
+duration_ByGender = dataset |> 
+  select("Gender", "Sleep.Duration")
+
+ggplot(duration_ByGender, 
+       aes(x = Gender, y = Sleep.Duration,
+           fill = Gender)) + geom_boxplot() + labs( title = "Sleep Duration By Gender",
+        x = "Gender",
+        y = "Sleep Duration (hours)"
+           ) 
+  
+ggplot(dataset, aes(x = Stress.Level, y = Sleep.Duration)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "lm", color = "blue", se = FALSE) +
+  labs(
+    title = "Relationship between Stress Level and Sleep Duration",
+    x = "Stress Level",
+    y = "Sleep Duration (hours)"
+  )
+
+cor_analysis = data.frame("Sleep Duration" = dataset$Sleep.Duration,
+"Stress Level" =  dataset$Stress.Level, 
+   "Physical Activity Level"= dataset$Physical.Activity.Level)
+
+cor(cor_analysis)
+
+```
+
+
