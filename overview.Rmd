@@ -23,8 +23,9 @@ This notebook focuses on data cleaning and exploratory analysis using R to prepa
 ```{r}
 library(tidyverse)
 dataset = read.csv("sleep_data.csv")
+
 str(dataset)
-is.na(dataset$Sleep.Duration)
+
 
 ```
 
@@ -48,9 +49,6 @@ Values = c(avg_sleep_duration, avg_quality_sleep, avg_physical_activity)
 averages
 
 #Plots 
-hist(dataset$Sleep.Duration,
-     main = "Sleep Duration",
-     xlab = "Sleep in hours" )
 
 duration_ByGender = dataset |> 
   select("Gender", "Sleep.Duration")
@@ -78,5 +76,18 @@ cor_analysis = data.frame("Sleep Duration" = dataset$Sleep.Duration,
 cor(cor_analysis)
 
 ```
+## Insight Summary
+-From the box plots, it seems that both male and females tend to get around the same duration of sleep 
+-From the scatter plot, we observe that stress levels and sleep duration are negatively correlated
+-Fron our correlation analysis, we observe that stress level and physcial activity are also negatively correlated 
 
+# Cleaning For Python 
+```{r}
+dataset$Gender = as.factor(dataset$Gender)
+dataset = dataset |> select("Gender", "Sleep.Duration",
+                  "Stress.Level", 
+                  "Physical.Activity.Level")
+
+write.csv(dataset, "/Users/mac/Desktop/mental health project/clean_data.csv", row.names = FALSE)
+```
 
